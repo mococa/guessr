@@ -18,10 +18,12 @@
 
 a:link {
     text-decoration: none;
+    color:unset;
 }
 
 a:visited {
     text-decoration: none;
+    color:unset;
 }
 
 a:hover {

@@ -61,6 +61,12 @@
         filter: brightness(80%);
         cursor: pointer;
     }
+    .footer a{
+        color:#e2ae5d;
+    }
+    .footer{
+        background: var(--block-color);
+    }
     .footer ul{
         list-style: none;
     }
@@ -119,13 +125,17 @@
                 <%}%>
         </div>
     </div>
-    <div class="footer">
+    <div class="footer" style="gap:80px;">
         <ul>Made with NodeJS:
-            <li>NeDB</li>
-            <li>Express</li>
-            <li>EJS</li>
-            <li>FontAwesome</li>
-            <li>Cheerio</li>
+            <li><a href="https://github.com/louischatriot/nedb">NeDB</a></li>
+            <li><a href="https://github.com/expressjs/express">Express</a></li>
+            <li><a href="https://github.com/mde/ejs">EJS</a></li>
+            <li><a href="https://github.com/cheeriojs/cheerio">Cheerio</a></li>
+            <li><a href="https://fontawesome.com/">FontAwesome</a></li>
+        </ul>
+        <ul>Made by Luiz Felipe Moureau:
+            <li><a href="http://github.com/mococa">Github</a></li>
+            <li><a href="http://twitter.com/luizmoureau">Twitter</a></li>
         </ul>
     </div>
 </body>
