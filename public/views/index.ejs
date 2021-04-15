@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guessr - Home</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<style>
+    .search-box {
+        background: var(--search-color);
+        border-radius: 20px;
+        height: 27px;
+        padding: 0 20px;
+
+    }
+
+    .search-box input {
+        background: transparent;
+        outline: none;
+        border: none;
+        color: white;
+    }
+
+    ::placeholder {
+        color: var(--white)
+    }
+
+    .top,
+    .bottom,.footer {
+        padding: 30px 50px;
+        font-size: 20px;
+    }
+    .search-results {
+        position: absolute;
+        width: 25%;
+        height: auto;
+        margin: -49px 0 0 120px;
+        background: var(--white);
+        border-radius: 0 0 5px 5px;
+        z-index: 9;
+        color: black;
+        padding: 10px;
+        display: none;
+    }
+
+    .search-results ul {
+        list-style: none;
+        width: 100%;
+
+    }
+
+    .search-results li {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .search-results li:hover {
+        filter: brightness(80%);
+        cursor: pointer;
+    }
+</style>
+<script>
+    var nomesGeneros = []
+</script>
+
+<body class="flex-ver" style="gap:20px">
+    <div class="header flex-hor">
+        <span>GUESSR</span>
+        <div class="search-box">
+            <input type="text" id="search" class="search" onkeyup="showSearchResult()" placeholder="Pesquisar" style="cursor: auto !important;">
+        </div>
+    </div>
+    <div class="top flex-hor" style="gap:var(--hor-gap);">
+        <div id="search-results" class="search-results">
+            <ul>
+                <li style="background: var(--white);">oi</li>
+                <li style="background: var(--white);">oi</li>
+                <li style="background: var(--white);">oi</li>
+            </ul>
+        </div>
+        <div class="populares flex-ver" style="gap:var(--ver-gap);flex:1;">
+            <span>POPULAR GENRES</span>
+            <div class="generos-populares block flex-hor" style="flex-wrap: wrap; gap:10px;">
+                <%for(const genero of maisAcessados){%>
+                    <a href="/g/<%=genero%>" class="index-button capitalize">
+                        <%=genero.replace(/\-/g, " " )%>
+                    </a>
+                    <%}%>
+            </div>
+        </div>
+        <div class="sobre flex-ver" style="gap:var(--ver-gap);flex:1;">
+            <span>ABOUT</span>
+            <div class="sobre block flex-ver" style="gap:15px;">
+                <span><a href="http://letras.mus.br" style="color:tomato">Letras.mus.br</a>
+                    WebScrapper guessing game</span>
+                <span>Can you guess the song given only one piece of it?</span>
+                <a href="http://github.com/mococa" title="My GitHub Profile">
+                    <img src="../src/github.png" alt="" height="105px"></a>
+            </div>
+        </div>
+    </div>
+    <div class="bottom flex-ver" style="gap:var(--ver-gap);">
+        <span>ALL GENRES</span>
+        <div class="todos block flex-hor" style="flex-wrap: wrap; gap:10px;">
+            <%for(const genero of generos){%>
+                <a href="/g/<%=genero%>" class="index-button capitalize">
+                    <%=genero.replace( /\-/g, " " )%>
+                </a>
+                <%}%>
+        </div>
+    </div>
+    <div class="footer">
+        <ul>Made with NodeJS:
+            <li>NeDB</li>
+            <li>Express</li>
+            <li>EJS</li>
+            <li>FontAwesome</li>
+            <li>Cheerio</li>
+        </ul>
+    </div>
+</body>
+<script>
+    var searching = false;
+    var searchresults = document.getElementById("search-results")
+    var input = document.getElementById("search")
+    var hrefs = document.getElementsByClassName("todos")[0].getElementsByTagName("a")
+    var todos = Array.prototype.slice.call(hrefs).map(x => { return { href: x.href, nome: x.innerText } })
+
+    //todo: a function that shows up searchresults
+    function showSearchResult() {
+        if (input.value) {
+            searchresults.style.display = "flex";
+            populateListSearch(input.value)
+        } else {
+            hideSearchResult()
+        }
+
+    }
+    function populateListSearch(search) {
+        const ul = searchresults.getElementsByTagName("ul")[0]
+        ul.innerHTML = ""
+        var found = false
+        for (el of todos) {
+            if (el.nome.toLowerCase().includes(search.toLowerCase())) {
+                console.log("Heeeere")
+                const li = document.createElement('li')
+                li.innerText = el.nome
+                li.onclick = function () { location.href = el.href; }
+                ul.append(li)
+                found = true;
+            }
+        }
+        if (!found) {
+            const li = document.createElement('li')
+            li.innerText = "No matches"
+            ul.append(li)
+        }
+
+    }
+    function hideSearchResult() {
+        searchresults.style.display = "none"
+    }
+</script>
+
+</html>

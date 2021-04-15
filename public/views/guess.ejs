@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/"></base>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <title>Guessr Game</title>
+</head>
+<style>
+    app {
+        display: none;
+    }
+
+    .genre {
+        font-size: 80px;
+        font-size: 80px;
+        margin-top: 40px;
+        text-transform: uppercase;
+    }
+
+    .game-controls {
+        gap: 30px;
+    }
+
+    .game-control {
+        place-items: center;
+        gap: 10px;
+        color: var(--control);
+        cursor: pointer;
+    }
+
+    .game-control i {
+        font-size: 40px;
+    }
+
+    .answer-box {
+        padding: 5px 15px;
+        border-radius: 25px;
+        ;
+        background: var(--block-color);
+    }
+
+    .answer-box input {
+        color: white;
+        font-size: 20px;
+        outline: none;
+        border: none;
+        background: transparent;
+    }
+</style>
+
+<body style="height:100vh">
+    <div class="header">
+        <span onclick="location.href='/'">Guessr</span>
+    </div>
+    <div class="top flex-ver" style="height: -webkit-fill-available; gap:10px; place-items: center;">
+        <span class="genre">
+            <%=genero%>
+        </span>
+        <div class="block" style="height: auto;flex:unset; width: 50vw;">
+            <span style="display: block;">
+                <i>
+                    <%-guess.guess.replace( /\n/g,"<br>");%>
+                </i>
+            </span>
+        </div>
+        <span>I think it is...</span>
+        <div class="answer-box">
+            <app>
+                <%for(const dica of guess.dicas){%>
+                    <span class="dica">
+                        <%=dica%>
+                    </span>
+                    <%}%>
+                        <span class="answer" value="<%=guess.answer%>">
+                            <%=guess.answer%>
+                        </span>
+                        <span class="musica">
+                            <%-JSON.stringify(guess.musica)%>
+                        </span>
+            </app>
+            <input type="text" onkeyup="">
+        </div>
+        <div class="game-controls flex-hor">
+
+            <span class="tip game-control flex-ver" onclick="showHint()">
+                <i class="fas fa-cookie-bite"></i>
+                Hint
+            </span>
+            <span class="skip game-control flex-ver" onclick="next()">
+                <i class="fas fa-forward"></i>
+                Skip
+            </span>
+            <span class="skip game-control flex-ver youtube-src" style="display: none;" onclick="next()">
+                <i class="fab fa-youtube"></i>
+                Procurar
+            </span>
+        </div>
+        <div class="bottom-block block flex-ver" style="height: auto;flex:unset; width: 40vw;display:none;">
+
+        </div>
+    </div>
+</body>
+<script>
+    var input = document.getElementsByClassName("answer-box")[0].getElementsByTagName("input")[0]
+    var bottomblock = document.getElementsByClassName("bottom-block")[0]
+    input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            checkAnswer(input.value);
+        }
+    });
+    function show(txt) {
+        emptyBottomBlock()
+        setBB(true)
+        const span = document.createElement("span")
+        span.innerText = txt
+        bottomblock.append(span)
+    }
+    function showHtml(html) {
+        emptyBottomBlock()
+        setBB(true)
+        bottomblock.append(html)
+    }
+    function next() {
+        const answerel = document.getElementsByClassName("answer")[0].innerText
+        const musicael = document.getElementsByClassName("musica")[0].innerText
+        const msc = JSON.parse(musicael)
+        const answer = `The answer was: ${answerel} (${msc.author} - ${msc.title}).\nGenerating another song...`
+
+        show(answer)
+        setTimeout(() => {
+            location.reload()
+        }, 2000)
+    }
+    var i = 0;
+    function showHint() {
+        var hints = Array.prototype.slice.call(document.getElementsByClassName("dica")).map(x => x.innerText)
+        show(hints[i])
+        i < 3 ? i += 1 : i = 0;
+    }
+    function checkAnswer(ans) {
+        const answerel = document.getElementsByClassName("answer")[0].attributes.value.value
+        if (ans.toLowerCase() == answerel.toLowerCase()) {
+            const musica = JSON.parse(document.getElementsByClassName("musica")[0].innerText)
+
+            show(`Congrats! You got it right! The song was "${musica.title}" from ${musica.author}.`)
+            
+            showYt(musica)
+        } else {
+            input.value = ""
+        }
+    }
+    function emptyBottomBlock() { bottomblock.innerHTML = "" }
+    function setBB(b) { b ? bottomblock.style.display = "flex" : bottomblock.style.display = "none" }
+    function showYt(musica) {
+        const yt = document.getElementsByClassName("youtube-src")[0]
+        yt.style.display = "flex";
+        
+        yt.onclick = async function () {
+            show("Loading...")
+            console.log(`/video/${musica.author} ${musica.title}`)
+            await fetch(`/video/${musica.author} ${musica.title}`).then(response=>response.json()).then(r=>{
+                const a_ = document.createElement("a")
+                a_.href = r[1]
+                a_.innerText = r[0]
+                showHtml(a_)
+            }).catch(e=>show("Coudn't find it :("))
+        }
+    }
+</script>
+
+</html>

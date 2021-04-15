@@ -1,0 +1,21 @@
+{
+  "name": "guessr",
+  "version": "1.0.0",
+  "description": "Lyrics guesser game",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Luiz Felipe Sousa Moureau Linhares",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.6",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "nedb": "^1.8.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "font-awesome": "^4.7.0"
+  }
+}
