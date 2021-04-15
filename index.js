@@ -17,15 +17,31 @@ app.set('view engine', 'ejs')
 
 app.listen(3000, () => { console.log("Listening to port 3000") })
 
-app.get('/', (req, res) => {
-    var maisAcessados = []
-    db.find({}, function (err, docs) {
-        //Filtrando os 8 gêneros mais acessados
-        maisAcessados = Object.entries(docs[0])
-            .sort((a, b) => b[1]['popularidade'] - a[1]['popularidade'])
-            .map(x => x[0]).slice(0, 8)
-        res.render("index", { generos: Guessr.generos, maisAcessados: maisAcessados })
-    })
+app.get('/', async (req, res) => {
+    await get()
+    async function get() {
+        var maisAcessados = []
+        db.find({}, async function (err, docs) {
+            if (err || !docs[0]) {
+                db.insert(
+                    await Object.assign({},
+                        ...Guessr.generos.map(x => {
+                            return { [x]: { popularidade: 0 } }
+                        })
+                    )
+                    , (e, d) => { get() })
+            }
+            //Filtrando os 8 gêneros mais acessados
+            try{
+            maisAcessados = Object.entries(docs[0])
+                .sort((a, b) => b[1]['popularidade'] - a[1]['popularidade'])
+                .map(x => x[0]).slice(0, 8)
+            return res.render("index", { generos: Guessr.generos, maisAcessados: maisAcessados })
+            }catch(e){
+                get()
+            }
+        })
+    }
 })
 
 app.get("/g/:genero", async (req, res) => {
@@ -33,12 +49,12 @@ app.get("/g/:genero", async (req, res) => {
     if (Guessr.generos.includes(genero)) {
         let guess = await getSong(genero)
         //return res.send(guess)
-        res.render("guess", {guess:guess, genero:genero})
+        res.render("guess", { guess: guess, genero: genero })
     } else {
         return res.send("oops. gênero não encontrado.")
     }
 })
-app.get('/video/:musica', async (req,res)=>{
+app.get('/video/:musica', async (req, res) => {
     const video = await Guessr.getVideo(req.params.musica)
     return res.send(video)
 })
@@ -51,7 +67,7 @@ async function getSong(genero) {
     }
     guess.dicas = guess.dicas.randomArr()
     const query = genero + ".popularidade"
-    db.update({}, { $inc: { [query]: 1 } }, {multi:true})
+    db.update({}, { $inc: { [query]: 1 } }, { multi: true })
     return guess
 }
 Array.prototype.randomArr = function () {
