@@ -51,7 +51,7 @@ async function getSong(genero) {
     }
     guess.dicas = guess.dicas.randomArr()
     const query = genero + ".popularidade"
-    db.update({ _id: "jbKxW5UKs8GzR6aa" }, { $inc: { [query]: 1 } }, {})
+    db.update({}, { $inc: { [query]: 1 } }, {multi:true})
     return guess
 }
 Array.prototype.randomArr = function () {
