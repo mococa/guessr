@@ -61,6 +61,13 @@
         filter: brightness(80%);
         cursor: pointer;
     }
+    .footer ul{
+        list-style: none;
+    }
+    .footer ul li{
+        padding:2px 12px;
+        font-size: 12px;
+    }
 </style>
 <script>
     var nomesGeneros = []
@@ -143,13 +150,17 @@
         const ul = searchresults.getElementsByTagName("ul")[0]
         ul.innerHTML = ""
         var found = false
-        for (el of todos) {
+        for (var el of todos) {
             if (el.nome.toLowerCase().includes(search.toLowerCase())) {
                 console.log("Heeeere")
+                const a = document.createElement('a')
+                a.href = el.href
+                
                 const li = document.createElement('li')
                 li.innerText = el.nome
-                li.onclick = function () { location.href = el.href; }
-                ul.append(li)
+                a.append(li)
+                //li.onclick = function () { location.href = el.href; }
+                ul.append(a)
                 found = true;
             }
         }

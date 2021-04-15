@@ -20,6 +20,7 @@ app.listen(3000, () => { console.log("Listening to port 3000") })
 app.get('/', async (req, res) => {
     await get()
     async function get() {
+        db.loadDatabase();
         var maisAcessados = []
         db.find({}, async function (err, docs) {
             if (err || !docs[0]) {
