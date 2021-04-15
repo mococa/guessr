@@ -33,13 +33,13 @@ app.get('/', async (req, res) => {
                     , (e, d) => { get() })
             }
             //Filtrando os 8 gêneros mais acessados
-            try{
-            maisAcessados = Object.entries(docs[0])
-                .sort((a, b) => b[1]['popularidade'] - a[1]['popularidade'])
-                .map(x => x[0]).slice(0, 8)
-            return res.render("index", { generos: Guessr.generos, maisAcessados: maisAcessados })
-            }catch(e){
-                get()
+            try {
+                maisAcessados = Object.entries(docs[0])
+                    .sort((a, b) => b[1]['popularidade'] - a[1]['popularidade'])
+                    .map(x => x[0]).slice(0, 8)
+                return res.render("index", { generos: Guessr.generos, maisAcessados: maisAcessados })
+            } catch (e) {
+                await get()
             }
         })
     }
@@ -49,10 +49,9 @@ app.get("/g/:genero", async (req, res) => {
     const genero = req.params.genero
     if (Guessr.generos.includes(genero)) {
         let guess = await getSong(genero)
-        //return res.send(guess)
-        res.render("guess", { guess: guess, genero: genero })
+        return res.render("guess", { guess: guess, genero: genero })
     } else {
-        return res.send("oops. gênero não encontrado.")
+        return res.send("Oops. Genre not found.")
     }
 })
 app.get('/video/:musica', async (req, res) => {
